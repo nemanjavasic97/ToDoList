@@ -5,15 +5,9 @@ import com.example.demo.model.Item;
 import com.example.demo.repository.ItemRepository;
 import com.example.demo.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
-import javax.websocket.server.PathParam;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -39,13 +33,12 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public void createItem(ItemDto itemDto, Date fromDate) throws ParseException {
+    public Item createItem(ItemDto itemDto, Date fromDate) throws ParseException {
         Item item1 = new Item();
         item1.setName(itemDto.getName());
         item1.setCompleted(false);
         item1.setDate(fromDate);
-        this.itemRepository.save(item1);
-
+        return this.itemRepository.save(item1);
     }
 
     @Override
@@ -65,6 +58,5 @@ public class ItemServiceImpl implements ItemService {
         idto.setName(i.getName());
         return idto;
     }
-
 
 }
