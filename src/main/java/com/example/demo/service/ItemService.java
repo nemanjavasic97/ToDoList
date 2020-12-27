@@ -10,5 +10,6 @@ import java.util.List;
 
 public interface ItemService {
     List<ItemDto> getAllItems(Date date);
-    void createItem(ItemDto itemDto) throws ParseException;
+    void createItem(ItemDto itemDto, Date fromDate) throws ParseException;
+    void editItem(ItemDto itemDto) throws ParseException;
 }

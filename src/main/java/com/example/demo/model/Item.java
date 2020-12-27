@@ -18,7 +18,7 @@ public class Item {
     private boolean completed = false;
 
     @Column
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @Temporal(TemporalType.DATE)
     private Date date;
 
     public Item() {

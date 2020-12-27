@@ -1,8 +1,6 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.ItemDto;
-import com.example.demo.model.Item;
-import com.example.demo.repository.ItemRepository;
 import com.example.demo.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -11,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.websocket.server.PathParam;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
@@ -23,30 +22,30 @@ public class ItemController {
     @Autowired
     private ItemService itemService;
 
-    @GetMapping("/{date}")
-    public ResponseEntity<?> getAllByDate (@PathVariable("date") String date){
+    @RequestMapping(value="/{from}" , method=RequestMethod.GET)
+    public @ResponseBody List<ItemDto> getItemsByDate(@PathVariable("from") @DateTimeFormat(pattern="yyyy-MM-dd") Date fromDate) {
+        System.out.println(fromDate);
+        List<ItemDto> lista = this.itemService.getAllItems(fromDate);
+        return lista;
+    }
+
+
+    @PostMapping(value = "/{from}")
+    public ResponseEntity<?> createItem(@RequestBody ItemDto itemDto, @PathVariable("from") @DateTimeFormat(pattern = "yyyy-MM-dd") Date fromDate) {
         try {
-            String[] abs = date.split("-", 5);
-            for (String a : abs) {
-                System.out.println(a);
-            }
-            int year = Integer.parseInt(abs[2]);
-            int month = Integer.parseInt(abs[1]);
-            int day = Integer.parseInt(abs[0]);
-            Date date1 = new Date(year-1900, month-1, day);
-            System.out.println(date1);
-            List<ItemDto> items = itemService.getAllItems(date1);
-            return new ResponseEntity<>(items, HttpStatus.OK);
+            this.itemService.createItem(itemDto, fromDate);
+            return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
-    @PostMapping(value = "")
-    public ResponseEntity<?> createItem(@RequestBody ItemDto itemDto) {
+    @PutMapping(value = "/{from}")
+    public ResponseEntity<?> changeCompleted(@RequestBody ItemDto itemDto) {
         try {
-            this.itemService.createItem(itemDto);
-            return new ResponseEntity<>(HttpStatus.CREATED);
+            this.itemService.editItem(itemDto);
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

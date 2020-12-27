@@ -30,11 +30,31 @@ public class ItemServiceImpl implements ItemService {
         List<Item> items = this.itemRepository.findAllByDate(date);
         List<ItemDto> itemDtos = new ArrayList<>();
         for (Item i: items){
-            System.out.println("asdasdasdasdas");
+            System.out.println(i.isCompleted());
             ItemDto id1 = this.mapItemToItemDto(i);
+            if(!i.isCompleted())
             itemDtos.add(id1);
         }
         return itemDtos;
+    }
+
+    @Override
+    public void createItem(ItemDto itemDto, Date fromDate) throws ParseException {
+        Item item1 = new Item();
+        item1.setName(itemDto.getName());
+        item1.setCompleted(false);
+        item1.setDate(fromDate);
+        this.itemRepository.save(item1);
+
+    }
+
+    @Override
+    public void editItem(ItemDto itemDto) throws ParseException {
+        Item itemToEdit = this.itemRepository.getOne(itemDto.getId());
+        //itemToEdit.setName(itemDto.getName());
+        itemToEdit.setCompleted(true);
+        //itemToEdit.setDate(itemDto.getDate());
+        this.itemRepository.save(itemToEdit);
     }
 
     private ItemDto mapItemToItemDto(Item i) {
@@ -46,16 +66,5 @@ public class ItemServiceImpl implements ItemService {
         return idto;
     }
 
-    @Override
-    public void createItem(ItemDto itemDto) throws ParseException {
-        System.out.println(itemDto.toString());
 
-        Item item1 = new Item();
-        item1.setName(itemDto.getName());
-        item1.setCompleted(itemDto.isCompleted());
-        item1.setId(itemDto.getId());
-        item1.setDate(itemDto.getDate());
-        this.itemRepository.save(item1);
-
-    }
 }
